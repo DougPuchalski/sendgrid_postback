@@ -14,4 +14,13 @@ Gem::Specification.new do |gem|
   gem.name          = "sendgrid_postback"
   gem.require_paths = ["lib"]
   gem.version       = SendgridPostback::VERSION
+  
+  # specify any dependencies here; for example:
+  #s.add_development_dependency "rspec"
+
+  gem.add_runtime_dependency "actionmailer"
+  gem.add_runtime_dependency "actionpack"
+  gem.add_runtime_dependency "uuidtools"
+  gem.add_runtime_dependency "yajl-ruby"
+  
 end
