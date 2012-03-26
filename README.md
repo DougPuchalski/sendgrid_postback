@@ -43,7 +43,29 @@ end
 
 ## Usage
 
-TODO: Write usage instructions here
+Your app should have a class, i.e. an ActiveRecord model, that mixes in SendgridPostback::EventReceiver. 
+This module adds attributes that should be persisted, `sendgrid_events` and `sendgrid_state`.
+
+```ruby
+class AddEventsAndState < ActiveRecord::Migration
+  def self.up
+    add_column :notifications, :state, :string
+    add_column :notifications, :events, :text
+  end
+
+  def self.down
+    remove_column :notifications, :state
+    remove_column :notifications, :events
+  end
+end
+```
+
+```ruby
+class Notification < ActiveRecord::Base
+  include SendgridPostback::EventReceiver
+  serialize :sendgrid_events
+end
+```
 
 ## Contributing
 
