@@ -14,6 +14,8 @@ module SendgridPostback
   class Config
     attr_accessor :logger
     attr_accessor :report_exception
+    attr_accessor :find_receiver_by_uuid
+    attr_accessor :postback_path
 
     def initialize
       #@report_exception = proc { |exc| }

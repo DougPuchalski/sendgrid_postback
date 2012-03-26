@@ -7,7 +7,7 @@ require 'action_dispatch/middleware/params_parser'
 module ActionDispatch
   ParamsParser.class_eval do
     def parse_formatted_parameters_with_sendgrid_postback(env)
-      if env['PATH_INFO'] == '/sendgrid_postback/events'
+      if env['PATH_INFO'] == SendgridPostback.config.postback_path
         begin
           request = Request.new(env)
           parser = ::Yajl::Parser.new
