@@ -35,9 +35,11 @@ SendgridPostback.configure do |config|
   # proc that accepts an exception for reporting
   config.report_exception = proc { |exc| ... } # Optional
 
-  # Proc that returns an instance for the given uuid.
+  # Required proc that returns an instance for the given uuid.
   # The class should mix in SendgridPostback::EventReceiver
-  config.find_receiver_by_uuid = proc { |uuid| ... } # Required
+  config.find_receiver_by_uuid = proc do |uuid|
+    Notification.find_by_uuid(uuid) # for example
+  end
 end
 ```
 
@@ -49,11 +51,13 @@ This module adds attributes that should be persisted, `sendgrid_events` and `sen
 ```ruby
 class AddEventsAndState < ActiveRecord::Migration
   def self.up
+    add_column :notifications, :uuid, :string
     add_column :notifications, :state, :string
     add_column :notifications, :events, :text
   end
 
   def self.down
+    remove_column :notifications, :uuid
     remove_column :notifications, :state
     remove_column :notifications, :events
   end
@@ -64,6 +68,29 @@ end
 class Notification < ActiveRecord::Base
   include SendgridPostback::EventReceiver
   serialize :sendgrid_events
+end
+```
+
+Add a new or adapt your existing MailObserver to trap email after they are sent to create a receiver instance.
+You may wish to also persist the email content itself.
+
+```ruby
+class MailObserver
+
+  # Capture UUID set by MailInterceptor and create a new Notification record
+  def self.delivered_email(email)
+    Notification.create!({
+        uuid: email.uuid
+        to: email.to.to_a.join(', '),
+        subject: email.subject,
+        email: email.to_s
+    })
+  end
+
+  def self.register
+    ActionMailer::Base.register_observer(self)
+  end
+
 end
 ```
 
