@@ -32,7 +32,7 @@ Configure the library, i.e. in your app's `config/initializers/sendgrid_postback
       # proc that accepts an exception for reporting
       config.report_exception = proc { |exc| ... } # Optional
 
-      # proc that returns an instance for the given uuid.
+      # Proc that returns an instance for the given uuid.
       # The class should mix in SendgridPostback::EventReceiver
       config.find_receiver_by_uuid = proc { |uuid| ...} # Required
     end

@@ -9,9 +9,9 @@ class SendgridPostback::EventsController < ActionController::Metal
   # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test@gmail.com", "event": "processed"}{"email": "test2@gmail.com", "event": "processed2"}' http://localhost:3000/sendgrid_postback/events
   def create
     parse_send_grid_events do |data|
-      receiver = SendgridPostback.config.find_receiver_by_uuid(data[:uuid])
+      receiver = SendgridPostback.config.find_receiver_by_uuid.call(data[:uuid])
       if receiver.blank?
-        SendgridPostback.config.report_exception "SendgridPostback postback: Notification UUID(#{data[:uuid]}) not found."
+        SendgridPostback.config.report_exception.call("SendgridPostback postback: Notification UUID(#{data[:uuid]}) not found.")
       else
         receiver.post_sendgrid_event(data)
       end
