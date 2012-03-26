@@ -16,26 +16,30 @@ ActionDispatch is patched (see action_dispatch_ext.rb) to handle the "invalid" i
 
 Add this line to your application's Gemfile:
 
-    gem 'sendgrid_postback', git: "git://github.com/aceofspades/sendgrid_postback.git"
+```ruby
+gem 'sendgrid_postback', git: "git://github.com/aceofspades/sendgrid_postback.git"
+```
 
 You'll need to configure your SendGrid account to enable the Event API.
 
 Configure the library, i.e. in your app's `config/initializers/sendgrid_postback.rb`:
 
-    require 'sendgrid_postback'
-    SendgridPostback.configure do |config|
-      config.logger = Rails::Logger
+```ruby
+require 'sendgrid_postback'
+SendgridPostback.configure do |config|
+  config.logger = Rails::Logger
 
-      # Path that routes to SendgridPostback::EventsController#create
-      config.postback_path = '/sendgrid_postback/events'
+  # Path that routes to SendgridPostback::EventsController#create
+  config.postback_path = '/sendgrid_postback/events'
 
-      # proc that accepts an exception for reporting
-      config.report_exception = proc { |exc| ... } # Optional
+  # proc that accepts an exception for reporting
+  config.report_exception = proc { |exc| ... } # Optional
 
-      # Proc that returns an instance for the given uuid.
-      # The class should mix in SendgridPostback::EventReceiver
-      config.find_receiver_by_uuid = proc { |uuid| ...} # Required
-    end
+  # Proc that returns an instance for the given uuid.
+  # The class should mix in SendgridPostback::EventReceiver
+  config.find_receiver_by_uuid = proc { |uuid| ... } # Required
+end
+```
 
 ## Usage
 
