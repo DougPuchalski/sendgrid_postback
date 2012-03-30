@@ -1,7 +1,6 @@
 # http://docs.sendgrid.com/documentation/api/event-api/
 
 class SendgridPostback::EventsController < ActionController::Metal
-  include ActionController::Rendering
   #before_filter :authenticate
   
   # To test, both single and multiple JSON elements in request:
@@ -16,9 +15,9 @@ class SendgridPostback::EventsController < ActionController::Metal
         receiver.post_sendgrid_event(data)
       end
     end
-    render nothing: true
+    self.response_body = ''
   rescue => exc
-    SendgridPostback.config.report_exception exc
+    SendgridPostback.config.report_exception.call(exc)
     render nothing: true, status: :internal_server_error
   end
 
