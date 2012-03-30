@@ -20,10 +20,10 @@ module ActionDispatch
           data
         rescue Exception => e
           # Delegate if anything goes wrong
-          parse_formatted_parameters_without_send_grid(env)
+          parse_formatted_parameters_without_sendgrid_postback(env)
         end
       else
-        parse_formatted_parameters_without_send_grid(env)
+        parse_formatted_parameters_without_sendgrid_postback(env)
       end
     end
     alias_method_chain :parse_formatted_parameters, :sendgrid_postback
