@@ -4,10 +4,11 @@ require 'action_dispatch/middleware/params_parser'
 
 # An unfortunate hack: SendgridPostback events in batch mode come in as invalid JSON--not an array, but newline-separated
 # hashes. Trap the middleware and parse it here.
+# TODO look into making a generic middleware that looks for newline-separated JSON and makes an array of it
 module ActionDispatch
   ParamsParser.class_eval do
     def parse_formatted_parameters_with_sendgrid_postback(env)
-      if env['PATH_INFO'] == SendgridPostback.config.postback_path
+      if env['PATH_INFO'] == SendgridPostback.config.request_path
         begin
           request = Request.new(env)
           parser = ::Yajl::Parser.new

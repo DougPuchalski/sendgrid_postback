@@ -30,7 +30,7 @@ SendgridPostback.configure do |config|
   config.logger = Rails::Logger
 
   # Path that routes to SendgridPostback::EventsController#create
-  config.postback_path = '/sendgrid_postback/events'
+  config.request_path = '/sendgrid_postback/events'
 
   # proc that accepts an exception for reporting
   config.report_exception = proc { |exc| ... } # Optional
