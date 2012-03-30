@@ -9,9 +9,9 @@ module SendgridPostback
     attr_accessor :sendgrid_state
       
     def post_sendgrid_event event_data
-      sendgrid_events ||= []
-      sendgrid_events << event_data
-      sendgrid_state = Event.sorted(sendgrid_events).last['event']
+      self.sendgrid_events ||= []
+      self.sendgrid_events << event_data
+      self.sendgrid_state = Event.sorted(sendgrid_events).last['event']
       after_create_sendgrid_event(event_data)
     end
     
