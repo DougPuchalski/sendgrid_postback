@@ -4,8 +4,8 @@ class SendgridPostback::EventsController < ActionController::Metal
   #before_filter :authenticate
   
   # To test, both single and multiple JSON elements in request:
-  # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test2@gmail.com", "event": "processed2"}' http://localhost:3000/sendgrid_postback/events
-  # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test@gmail.com", "event": "processed"}{"email": "test2@gmail.com", "event": "processed2"}' http://localhost:3000/sendgrid_postback/events
+  # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test2@gmail.com", "event": "processed2"}' https://localhost:3000/sendgrid_postback/events
+  # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test@gmail.com", "event": "processed"}{"email": "test2@gmail.com", "event": "processed2"}' https://localhost:3000/sendgrid_postback/events
   def create
     parse_send_grid_events do |data|
       receiver = SendgridPostback.config.find_receiver_by_uuid.call(data[:uuid])

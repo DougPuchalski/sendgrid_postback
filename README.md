@@ -43,6 +43,12 @@ SendgridPostback.configure do |config|
 end
 ```
 
+Add the route manually to your routes.rb at the top level, so the declaration can remain DRY:
+
+```ruby
+  post SendgridPostback.config.request_path => 'sendgrid_postback/events#create', constraints: { protocol: 'https' }
+```
+
 ## Usage
 
 Your app should have a class, i.e. an ActiveRecord model, that mixes in SendgridPostback::EventReceiver. 
