@@ -18,7 +18,7 @@ class SendgridPostback::EventsController < ActionController::Metal
       if receiver.blank?
         SendgridPostback.config.report_exception.call("SendgridPostback postback: Notification UUID(#{data[:uuid]}) not found.")
       else
-        receiver.post_sendgrid_event(data)
+        receiver.send(:post_sendgrid_event, data)
       end
     end
     self.response_body = ''
