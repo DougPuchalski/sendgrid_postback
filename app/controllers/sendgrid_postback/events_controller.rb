@@ -7,6 +7,12 @@ class SendgridPostback::EventsController < ActionController::Metal
   # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test2@gmail.com", "event": "processed2"}' https://localhost:3000/sendgrid_postback/events
   # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test@gmail.com", "event": "processed"}{"email": "test2@gmail.com", "event": "processed2"}' https://localhost:3000/sendgrid_postback/events
   def create
+    unless request.ssl?
+      self.response_body = ''
+      self.status = :bad_request
+      return
+    end
+
     parse_send_grid_events do |data|
       receiver = SendgridPostback.config.find_receiver_by_uuid.call(data[:uuid])
       if receiver.blank?
@@ -18,7 +24,8 @@ class SendgridPostback::EventsController < ActionController::Metal
     self.response_body = ''
   rescue => exc
     SendgridPostback.config.report_exception.call(exc)
-    render nothing: true, status: :internal_server_error
+    self.response_body = ''
+    self.status = :internal_server_error
   end
 
   private
