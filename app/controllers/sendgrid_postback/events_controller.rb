@@ -2,11 +2,12 @@
 
 class SendgridPostback::EventsController < ActionController::Metal
   #before_filter :authenticate
-  
+
   # To test, both single and multiple JSON elements in request:
   # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test2@gmail.com", "event": "processed2"}' https://localhost:3000/sendgrid_postback/events
   # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test@gmail.com", "event": "processed"}{"email": "test2@gmail.com", "event": "processed2"}' https://localhost:3000/sendgrid_postback/events
   def create
+    SendgridPostback.logger.info "#{self.class}#create event params: #{params[:events].inspect}"
     unless request.ssl?
       self.response_body = ''
       self.status = :bad_request

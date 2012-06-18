@@ -22,9 +22,9 @@ module SendgridPostback
     end
   end
 
-  delegate :logger, to: :config
-
   class << self
+    delegate :logger, to: :config
+
     def configure &block
       yield config
     end
