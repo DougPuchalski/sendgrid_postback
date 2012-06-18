@@ -10,21 +10,25 @@ module SendgridPostback
       open: 3,
       click: 4,
       unsubscribe: 4,
-      spam_report: 4
+      spamreport: 4
     }
+
+    def self.order(val)
+      ORDER[val] || 99
+    end
 
     # Events are not ordered by SendgridPostback, either by arrival nor timestamp.
     # http://docs.sendgrid.com/documentation/api/event-api/
     def self.sorted events
       state = nil
-      symbolize_events(events).sort do |x, y|
-        ord = ORDER[x[:event]] <=> ORDER[y[:event]]
-        ord = ORDER[x[:timestamp]] <=> ORDER[y[:timestamp]] if ord == 0
+      normalize_events(events).sort do |x, y|
+        ord = order(x[:event]) <=> order(y[:event])
+        ord = x[:timestamp] <=> y[:timestamp] if ord == 0
         ord
       end
     end
 
-    def self.symbolize_events events
+    def self.normalize_events events
       events = events.map{|x| HashWithIndifferentAccess.new(x)}
       events.map do |event|
         event[:event] = event[:event].to_sym
