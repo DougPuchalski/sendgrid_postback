@@ -4,8 +4,8 @@ require File.expand_path('../lib/sendgrid_postback/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Doug Puchalski"]
   gem.email         = ["doug+github@fullware.net"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{SendgridPostback is a Rails Engine which integrates with the SendGrid Event API.}
+  gem.summary       = %q{SendgridPostback is a Rails Engine which integrates with the SendGrid Event API.}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($\)
