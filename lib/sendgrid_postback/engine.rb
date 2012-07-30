@@ -10,7 +10,7 @@ module SendgridPostback
     end
 
     config.after_initialize do
-      MailInterceptor.install unless config.disable_interceptor
+      MailInterceptor.install unless SendgridPostback.config.enable_interceptor
     end
 
   end
