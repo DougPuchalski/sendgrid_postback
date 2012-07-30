@@ -17,10 +17,12 @@ module SendgridPostback
     attr_accessor :find_receiver_by_uuid
     attr_accessor :request_path
     attr_accessor :enable_interceptor
+    attr_accessor :require_ssl
 
     def initialize
       #@report_exception = proc { |exc| }
       enable_interceptor = true
+      require_ssl = true
     end
   end
 
