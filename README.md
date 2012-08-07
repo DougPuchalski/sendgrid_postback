@@ -5,7 +5,7 @@ SendgridPostback is a Rails Engine which integrates with the [SendGrid](http://s
 
 It includes a MailInterceptor which will attach a UUID header in all mails before they are sent.
 When properly configured, SendGrid will then post events for each message to your app. You'll
-know when emails are delivered, bounced, delayed, clicked, etc., according to your SendGrid 
+know when emails are delivered, bounced, delayed, clicked, etc., according to your SendGrid
 account configuration.
 
 Note that for performance reasons, you'll probably want to configure your Event API to batch events.
@@ -35,10 +35,25 @@ SendgridPostback.configure do |config|
   # proc that accepts an exception for reporting
   config.report_exception = proc { |exc| ... } # Optional
 
+  # If you're creating Sendgrid UUID yourself, disable the interceptor
+  config.enable_interceptor = false
+
+  # Allow the controller to recieve data over non-ssl connections
+  config.require_ssl = false
+
   # Required proc that returns an instance for the given uuid.
   # The class should mix in SendgridPostback::EventReceiver
   config.find_receiver_by_uuid = proc do |uuid|
     Notification.find_by_uuid(uuid) # for example
+  end
+
+  # Sendgrid will post all events to your receiver URL.  If emails are sent
+  # via Sendgrid outside of this application their events will still post back here.
+  # You can specify a model here.
+  # Add a post_general_sendgrid_event(data) method to handle receiving the data as
+  # you please.
+  config.get_general_event_receiver = proc do
+    SendgridReport.new
   end
 end
 ```
@@ -51,7 +66,7 @@ Add the route manually to your routes.rb at the top level, so the declaration ca
 
 ## Usage
 
-Your app should have a class, i.e. an ActiveRecord model, that mixes in SendgridPostback::EventReceiver. 
+Your app should have a class, i.e. an ActiveRecord model, that mixes in SendgridPostback::EventReceiver.
 This module adds attributes that should be persisted, `sendgrid_events` and `sendgrid_state`.
 
 ```ruby
