@@ -14,8 +14,9 @@ class SendgridPostback::EventsController < ActionController::Metal
       return
     end
 
-    parse_send_grid_events do |data|
-      receiver = SendgridPostback.config.find_receiver_by_uuid.call(data[:uuid])
+    parse_send_grid_events do |data|            
+      receiver = SendgridPostback.config.find_receiver_by_uuid.call(data[:uuid]) if data[:uuid]
+      
       if receiver.blank?
         general_receiver = SendgridPostback.config.get_general_event_receiver.call
         
