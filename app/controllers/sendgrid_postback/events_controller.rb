@@ -8,16 +8,23 @@ class SendgridPostback::EventsController < ActionController::Metal
   # curl -i -H "Content-Type: application/json" -X POST -d '{"email": "test@gmail.com", "event": "processed"}{"email": "test2@gmail.com", "event": "processed2"}' https://localhost:3000/sendgrid_postback/events
   def create
     SendgridPostback.logger.info "#{self.class}#create event params: #{params[:events].inspect}"
-    unless request.ssl?
+    if SendgridPostback.config.require_ssl && !request.ssl?
       self.response_body = ''
       self.status = :bad_request
       return
     end
 
-    parse_send_grid_events do |data|
-      receiver = SendgridPostback.config.find_receiver_by_uuid.call(data[:uuid])
+    parse_send_grid_events do |data|            
+      receiver = SendgridPostback.config.find_receiver_by_uuid.call(data[:uuid]) if data[:uuid]
+      
       if receiver.blank?
-        SendgridPostback.config.report_exception.call("SendgridPostback postback: Notification UUID(#{data[:uuid]}) not found.")
+        general_receiver = SendgridPostback.config.get_general_event_receiver.call
+        
+        if general_receiver.blank?
+          SendgridPostback.config.report_exception.call("SendgridPostback postback: Notification UUID(#{data[:uuid]}) not found.")
+        else
+          general_receiver.send(:post_general_sendgrid_event, data)
+        end
       else
         receiver.send(:post_sendgrid_event, data)
       end
